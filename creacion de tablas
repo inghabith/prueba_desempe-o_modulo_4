@@ -1,0 +1,78 @@
+CREATE TABLE riwi_categories (
+    id         SERIAL       NOT NULL,
+    category_name VARCHAR(50)  NOT NULL,
+    CONSTRAINT pk_categories PRIMARY KEY (id)
+);
+
+CREATE TABLE riwi_products (
+    id         SERIAL       NOT NULL,
+    product_name VARCHAR(50)  NOT NULL,
+	id_categories SMALLINT NOT NULL,
+    CONSTRAINT pk_product PRIMARY KEY (id),
+    CONSTRAINT fk_products_categories FOREIGN KEY (id_categories) REFERENCES riwi_categories (id)    
+);
+
+
+CREATE TABLE riwi_cities (
+    id         SERIAL       NOT NULL,
+	city_names VARCHAR(50)  NOT NULL,
+    CONSTRAINT pk_cities PRIMARY KEY (id)
+);
+
+
+CREATE TABLE riwi_warehouses_sites (
+    id         SERIAL       NOT NULL,
+	warehouses_names VARCHAR (50),
+    CONSTRAINT pk_warehouses_cities_sites PRIMARY KEY (id)
+);
+
+
+CREATE TABLE riwi_warehouses_cities (
+    id         SERIAL       NOT NULL,
+	id_riwi_cities SMALLINT NOT NULL,
+	id_warehouses_sites SMALLINT NOT NULL,
+    CONSTRAINT pk_warehouses_citiess PRIMARY KEY (id),
+    CONSTRAINT fk_warehouses_cities FOREIGN KEY (id_riwi_cities) REFERENCES riwi_cities (id),
+	CONSTRAINT fk_warehouses_sites FOREIGN KEY (id_warehouses_sites) REFERENCES riwi_warehouses_sites (id)
+);
+
+CREATE TABLE riwi_suppliers (
+    id         SERIAL       NOT NULL,
+    suppliers_names VARCHAR (50) NOT NULL,
+    CONSTRAINT pk_suppliers PRIMARY KEY (id)
+);
+
+
+CREATE TABLE riwi_suppliers_cities (
+    id         SERIAL       NOT NULL,
+	id_riwi_supplier SMALLINT NOT NULL,
+	id_riwi_cities SMALLINT NOT NULL,
+    CONSTRAINT pk_purchase_details PRIMARY KEY (id),
+    CONSTRAINT fk_city_suppliers FOREIGN KEY (id_riwi_supplier) REFERENCES riwi_suppliers (id),
+	CONSTRAINT fk_details_cities FOREIGN KEY (id_riwi_cities) REFERENCES riwi_cities (id)
+);
+
+
+CREATE TABLE riwi_purchase_order (
+    id         SERIAL       NOT NULL,
+    invoice_number VARCHAR (50) NOT NULL,
+	id_riwi_suppliers SMALLINT NOT NULL,
+	id_riwi_warehouses_sites SMALLINT NOT NULL,
+    CONSTRAINT pk_purchase_order PRIMARY KEY (id),
+    CONSTRAINT fk_order_supplier FOREIGN KEY (id_riwi_suppliers) REFERENCES riwi_suppliers (id),
+	CONSTRAINT fk_order_warehouse FOREIGN KEY (id_riwi_warehouses_sites) REFERENCES riwi_warehouses_sites (id)	    
+);
+
+
+CREATE TABLE riwi_purchase_details (
+    id         SERIAL       NOT NULL,
+    movement_date TIMESTAMP NOT NULL,
+	quantities INT NOT NULL,
+	movement_type VARCHAR (20) CHECK (movement_type IN('IN','OUT')),
+	id_riwi_products SMALLINT NOT NULL,
+	id_riwi_purchase_order SMALLINT NOT NULL,
+    CONSTRAINT pk_purchase_d PRIMARY KEY (id),
+    CONSTRAINT fk_details_products FOREIGN KEY (id_riwi_products) REFERENCES riwi_products (id),
+	CONSTRAINT fk_details_purchase FOREIGN KEY (id_riwi_purchase_order) REFERENCES riwi_purchase_order (id)	   
+);
+

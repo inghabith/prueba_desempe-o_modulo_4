@@ -1,0 +1,32 @@
+--insercion
+INSERT INTO riwi_suppliers (
+suppliers_names
+)
+VALUES 
+('Aceros del Norte S.A.S'),
+('Industriales SAS'),
+('Suministros Global SAS'),
+('ferregold'); --NUevo supplier
+
+INSERT INTO riwi_categories (
+category_name
+)
+VALUES
+('herramienta'),
+('consumible'),
+('elementos de proteccion');
+
+INSERT INTO riwi_products (
+product_name, id_categories
+)
+VALUES
+('compactadora', '1' ), --nUEVO PRODUCTO 
+('Disco de Corte 4.5', '1' ),
+('Electrodo E6013' ,'2'),
+('Guantes de Nitrilo' ,'3');
+
+
+--actualizacion
+ALTER TABLE riwi_suppliers
+ALTER COLUMN 
+
