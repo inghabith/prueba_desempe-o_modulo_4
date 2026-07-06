@@ -50,4 +50,14 @@ CREATE TABLE riwi_purchase_order (
     CONSTRAINT fk_order_supplier FOREIGN KEY (id_riwi_suppliers) REFERENCES riwi_suppliers (id),
 	CONSTRAINT fk_order_warehouse FOREIGN KEY (id_riwi_warehouses_sites) REFERENCES riwi_warehouses_sites (id)	    
 );
-CREAT
+CREATE TABLE riwi_purchase_details (
+    id         SERIAL       NOT NULL,
+    movement_date TIMESTAMP NOT NULL,
+	quantities INT NOT NULL,
+	movement_type VARCHAR (20) CHECK (movement_type IN('IN','OUT')),
+	id_riwi_products SMALLINT NOT NULL,
+	id_riwi_purchase_order SMALLINT NOT NULL,
+    CONSTRAINT pk_purchase_d PRIMARY KEY (id),
+    CONSTRAINT fk_details_products FOREIGN KEY (id_riwi_products) REFERENCES riwi_products (id),
+	CONSTRAINT fk_details_purchase FOREIGN KEY (id_riwi_purchase_order) REFERENCES riwi_purchase_order (id)	   
+);
