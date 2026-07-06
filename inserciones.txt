@@ -109,3 +109,45 @@ WHERE id = 4;
 -- 4. ELIMINACIÓN: producto sin movimientos
 DELETE FROM riwi_products
 WHERE id = 5;
+
+
+=============================================
+consulTas
+==========================================
+Consulta 1 – Stock disponible por producto
+SELECT p.product_name,
+SUM(pd.quantities) FILTER (WHERE pd.movement_type = 'IN') - SUM(pd.quantities) FILTER (WHERE pd.movement_type = 'OUT') AS stock_disponible
+FROM riwi_purchase_details pd
+JOIN riwi_products p ON p.id = pd.id_riwi_products
+GROUP BY p.product_name
+ORDER BY stock_disponible DESC;
+
+Consulta 2 – Movimientos con detalle de producto y bodega
+SELECT pd.movement_date, pd.movement_type, pd.quantities,
+p.product_name, w.warehouses_names
+FROM riwi_purchase_details pd
+JOIN riwi_products p ON p.id = pd.id_riwi_products
+JOIN riwi_purchase_order po ON po.id = pd.id_riwi_purchase_order
+JOIN riwi_warehouses_sites w ON w.id = po.id_riwi_warehouses_sites
+ORDER BY pd.movement_date;
+
+
+Consulta 3 – Total comprado por proveedor
+SELECT s.suppliers_names,
+SUM(pd.quantities * pd.unit_price) AS total_comprado
+FROM riwi_purchase_details pd
+JOIN riwi_purchase_order po ON po.id = pd.id_riwi_purchase_order
+JOIN riwi_suppliers s ON s.id = po.id_riwi_suppliers
+WHERE pd.movement_type = 'IN'
+GROUP BY s.suppliers_names
+ORDER BY total_comprado DESC;
+
+
+Consulta 4 – Cantidad de movimientos por bodega
+SELECT w.warehouses_names, COUNT(*) AS cantidad_movimientos
+FROM riwi_purchase_details pd
+JOIN riwi_purchase_order po ON po.id = pd.id_riwi_purchase_order
+JOIN riwi_warehouses_sites w ON w.id = po.id_riwi_warehouses_sites
+GROUP BY w.warehouses_names
+ORDER BY cantidad_movimientos DESC;
+
