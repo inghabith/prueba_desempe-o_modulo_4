@@ -1,32 +1,111 @@
---insercion
-INSERT INTO riwi_suppliers (
-suppliers_names
-)
-VALUES 
-('Aceros del Norte S.A.S'),
-('Industriales SAS'),
-('Suministros Global SAS'),
-('ferregold'); --NUevo supplier
+-- Categorías de productos
+INSERT INTO riwi_categories (category_name) VALUES
+('consumibles'),
+('elementos protección'),
+('herramientas');
 
-INSERT INTO riwi_categories (
-category_name
-)
+-- Ciudades donde operan bodegas y proveedores
+INSERT INTO riwi_cities (city_names) VALUES
+('barranquilla'),
+('cartagena'),
+('santa marta');
+
+-- Productos
+INSERT INTO riwi_products (product_name, id_categories) VALUES
+('casco industrial', 2),
+('disco de corte 4.5', 3),
+('electrodo e6013', 1),
+('guantes de nitrilo', 2);
+
+-- Bodegas 
+INSERT INTO riwi_warehouses_sites (warehouses_names) VALUES
+('bodega central'),
+('bodega costa'),
+('centro logistico norte');
+
+-- Relacion bodega - ciudad
+INSERT INTO riwi_warehouses_cities (id_riwi_cities, id_warehouses_sites) VALUES
+(1, 1),    
+(3, 2),      
+(2, 3); 
+
+-- Proveedores
+INSERT INTO riwi_suppliers (suppliers_names) VALUES
+('aceros del norte s.a.s'),
+('industriales s.a.s'),
+('suministros global s.a.s');
+
+-- Relación proveedor - ciudad
+INSERT INTO riwi_suppliers_cities (id_riwi_supplier, id_riwi_cities)
 VALUES
-('herramienta'),
-('consumible'),
-('elementos de proteccion');
+(1, 2), -- aceros del norte   
+(2, 1), -- industriales       
+(3, 3); -- suministros global  
 
-INSERT INTO riwi_products (
-product_name, id_categories
-)
+-- Órdenes de compra
+INSERT INTO riwi_purchase_order (invoice_number, id_riwi_suppliers, id_riwi_warehouses_sites) VALUES
+('po-1049', 1, 2),
+('po-1041', 1, 2),
+('po-1022', 2, 2),
+('po-1075', 1, 3),
+('po-1091', 2, 1),
+('po-1059', 1, 1),
+('po-1035', 2, 2),
+('po-1032', 3, 1),
+('po-1009', 3, 1),
+('po-1023', 1, 1);
+
+-- Movimientos:
+INSERT INTO riwi_purchase_details (movement_date, quantities, movement_type, unit_price, id_riwi_products, id_riwi_purchase_order) 
 VALUES
-('compactadora', '1' ), --nUEVO PRODUCTO 
-('Disco de Corte 4.5', '1' ),
-('Electrodo E6013' ,'2'),
-('Guantes de Nitrilo' ,'3');
+('2026-04-01', 148, 'OUT', 115388.00, 2, 1),
+('2026-02-14', 27, 'IN', 35506.00, 3, 2),
+('2026-01-01', 70, 'IN', 14290.00, 4, 3),
+('2026-02-16', 160, 'IN', 117524.00, 4, 4),
+('2026-02-28', 40, 'OUT', 139836.00, 3, 5),
+('2026-01-20', 33, 'OUT', 43746.00, 3, 6),
+('2026-04-13', 119, 'OUT', 23022.00, 4, 7),
+('2026-04-17', 185, 'IN', 123653.00, 4, 8),
+('2026-02-02', 87, 'OUT', 123108.00, 3, 9),
+('2026-03-19', 199, 'OUT', 118291.00, 2, 10);
+
+-- Producto sin movimientos
+INSERT INTO riwi_products (product_name, id_categories) VALUES
+('overol industrial', 2); -- id 5
 
 
---actualizacion
-ALTER TABLE riwi_suppliers
-ALTER COLUMN 
+-- INSERCIÓN: nuevo proveedor + producto asociado
+-- nuevo proveedor 
+INSERT INTO riwi_suppliers (suppliers_names)
+VALUES
+('ferretería del caribe s.a.s');
 
+-- ciudad de ese proveedor
+INSERT INTO riwi_suppliers_cities (id_riwi_supplier, id_riwi_cities)
+VALUES
+(4, 1);
+
+-- nuevo producto 
+INSERT INTO riwi_products (product_name, id_categories)
+VALUES
+('careta de soldar', 2);
+
+-- orden de compra que conecta al proveedor con una bodega (quedará con id 11)
+INSERT INTO riwi_purchase_order (invoice_number, id_riwi_suppliers, id_riwi_warehouses_sites)
+VALUES
+('po-2001', 4, 1);
+
+-- movimiento que asocia el producto a esa orden de compra
+INSERT INTO riwi_purchase_details (movement_date, quantities, movement_type, unit_price, id_riwi_products, id_riwi_purchase_order) 
+VALUES
+(CURRENT_TIMESTAMP, 50, 'IN', 45000.00, 6, 11);
+
+
+-- 3. ACTUALIZACIÓN: modificar proveedor existente
+UPDATE riwi_suppliers
+SET suppliers_names = 'ferretería del caribe'
+WHERE id = 4;
+
+-- 4. ELIMINACIÓN: producto sin movimientos
+DELETE FROM riwi_products
+WHERE id = 5;
